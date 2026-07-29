@@ -12,7 +12,7 @@ const createVocabsTable = async () => {
 `;
   try {
     await pool.query(queryText);
-    console.log("Vovab table created");
+    console.log("Vocab table created");
   } catch (error) {
     console.log("Error creating vocab table", error);
   }
