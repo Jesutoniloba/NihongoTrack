@@ -27,25 +27,22 @@ export async function login(req, res) {
     );
     const storedHash = hash.rows[0].password_hash;
     if (await argon2.verify(storedHash, req.body.password)) {
-      //   res
-      //   .status(200)
-      //   .json({ user: user, message: "AUTHENTICATION SUCESSFULL" });
+      const accessToken = generateAccessToken(user);
+      res.json({ accessToken: accessToken });
+      const refreshToken = jwt.sign(user, env.REFRESH_TOKEN_SECRET, {
+        expiresIn: env.REFRESH_TOKEN_EXPIRES_IN,
+      });
+      const refresh = // Correct way to save a token to an existing user's row
+        await pool.query(
+          `UPDATE users SET refresh_token = $1 WHERE email = $2`,
+          [refreshToken, req.body.email],
+        );
     } else {
-      // res.status(403).send("Authentication Failed");
+      res.status(403).send("Authentication Failed");
     }
   } catch (err) {
     //res.send("Authentication Error");
   }
-  const accessToken = generateAccessToken(user);
-  res.json({ accessToken: accessToken });
-  const refreshToken = jwt.sign(user, env.REFRESH_TOKEN_SECRET, {
-    expiresIn: env.REFRESH_TOKEN_EXPIRES_IN,
-  });
-  const refresh = // Correct way to save a token to an existing user's row
-    await pool.query(`UPDATE users SET refresh_token = $1 WHERE email = $2`, [
-      refreshToken,
-      req.body.email,
-    ]);
 
   // return refresh.rows[0];
 }
