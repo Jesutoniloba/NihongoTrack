@@ -49,15 +49,7 @@ const updateUsers = async (req, res, next) => {
   }
 };
 
-/*const createUsers = async (req, res, next) => {
-  try {
-    const { username, email, password_hash } = req.body;
-    const newUser = await createUsersService(username, email, password_hash);
-    handleResponse(res, 200, "User created sucessfully", newUser);
-  } catch (err) {
-    next(err);
-  }
-};*/
+
 
 const deleteUsers = async (req, res, next) => {
   try {

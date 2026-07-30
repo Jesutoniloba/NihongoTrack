@@ -25,6 +25,7 @@ app.use(errorHandling);
 
 async function startServer() {
   await createUsersTable();
+  await createVocabsTable();
   app.listen(port, () => {
     console.log(`Server running on http://localhost/${port}`);
   });
