@@ -5,12 +5,19 @@ import { env } from "../config/env.js";
 import { createUserService } from "../models/user-model.js";
 
 export async function register(req, res) {
-  const password_hash = await argon2.hash(req.body.password);
-  const { username, email } = req.body;
-  const newUser = createUserService(username, email, password_hash);
-  res
-    .status(201)
-    .json({ message: "User created Sucessfully", newUser: newUser.username });
+  const { username, email, password } = req.body;
+  try {
+    if (password && username && email) {
+      const password_hash = await argon2.hash(password);
+      const newUser = createUserService(username, email, password_hash);
+      return res.status(201).json({
+        message: "User created Sucessfully",
+        newUser: newUser.username,
+      });
+    } else {
+      res.status(400).send("Bad");
+    }
+  } catch (error) {}
 }
 
 //async function verifyUser(req, res) {}
@@ -28,7 +35,7 @@ export async function login(req, res) {
     const storedHash = hash.rows[0].password_hash;
     if (await argon2.verify(storedHash, req.body.password)) {
       const accessToken = generateAccessToken(user);
-      res.json({ accessToken: accessToken });
+
       const refreshToken = jwt.sign(user, env.REFRESH_TOKEN_SECRET, {
         expiresIn: env.REFRESH_TOKEN_EXPIRES_IN,
       });
@@ -37,12 +44,11 @@ export async function login(req, res) {
           `UPDATE users SET refresh_token = $1 WHERE email = $2`,
           [refreshToken, req.body.email],
         );
+      res.json({ accessToken: accessToken, refreshToken: refreshToken });
     } else {
       res.status(403).send("Authentication Failed");
     }
-  } catch (err) {
-    //res.send("Authentication Error");
-  }
+  } catch (err) {}
 
   // return refresh.rows[0];
 }
