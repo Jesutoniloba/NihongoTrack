@@ -16,7 +16,7 @@ const handleResponse = (res, status, message, data = null) => {
 
 const getAllVocabs = async (req, res, next) => {
   try {
-    const vocabs = await getAllVocabsService();
+    const vocabs = await getAllVocabsService(req.user.id);
     handleResponse(res, 200, "Vocabs fetched sucessfully", vocabs);
   } catch (err) {
     next(err);
@@ -46,8 +46,10 @@ const updateVocabs = async (req, res, next) => {
 
 const createVocabs = async (req, res, next) => {
   try {
-    const { word, meaning } = req.body;
-    const newVocab = await createVocabsService(word, meaning);
+    const word = req.body.word;
+    const meaning = req.body.meaning;
+    const userId = req.user.id;
+    const newVocab = await createVocabsService(word, meaning, userId);
     handleResponse(res, 200, "Vocab created sucessfully", newVocab);
   } catch (err) {
     next(err);

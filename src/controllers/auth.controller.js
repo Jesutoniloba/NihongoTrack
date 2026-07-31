@@ -33,9 +33,10 @@ export async function refresh(req, res) {
   res.json({ accessToken: accessToken });
 }
 export async function login(req, res) {
-  const result = await pool.query(`SELECT email FROM users WHERE email = $1`, [
-    req.body.email,
-  ]);
+  const result = await pool.query(
+    `SELECT email,id FROM users WHERE email = $1`,
+    [req.body.email],
+  );
   const user = result.rows[0];
   if (!user) return res.status(404).send(" User not found");
   try {
@@ -54,7 +55,11 @@ export async function login(req, res) {
         refreshToken,
         req.body.email,
       ]);
-      res.json({ accessToken: accessToken, refreshToken: refreshToken });
+      res.json({
+        accessToken: accessToken,
+        refreshToken: refreshToken,
+        user: user,
+      });
     } else {
       res.status(403).send("Authentication Failed");
     }

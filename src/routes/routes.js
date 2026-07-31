@@ -10,8 +10,8 @@ import {
 const router = express.Router();
 
 router.get("/", verifyToken, getAllVocabs);
-router.get("/:id", getVocab);
-router.post("/", createVocabs);
-router.put("/:id", updateVocabs);
-router.delete("/:id", deleteVocabs);
+router.get("/:id", verifyToken, getVocab);
+router.post("/", verifyToken, createVocabs);
+router.put("/:id", verifyToken, updateVocabs);
+router.delete("/:id", verifyToken, deleteVocabs);
 export default router;

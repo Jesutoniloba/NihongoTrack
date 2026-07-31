@@ -1,15 +1,17 @@
 import pool from "../config/db.js";
 
-export const createVocabsService = async (word, meaning) => {
+export const createVocabsService = async (word, meaning, userId) => {
   const result = await pool.query(
-    "INSERT INTO vocabs (word, meaning) VALUES ($1, $2) RETURNING *",
-    [word, meaning],
+    "INSERT INTO vocabs (word, meaning, user_id) VALUES ($1, $2, $3) RETURNING *",
+    [word, meaning, userId],
   );
   return result.rows[0];
 };
 
-export const getAllVocabsService = async () => {
-  const result = await pool.query("SELECT * FROM vocabs");
+export const getAllVocabsService = async (userId) => {
+  const result = await pool.query("SELECT * FROM vocabs WHERE user_id = $1", [
+    userId,
+  ]);
   return result.rows;
 };
 

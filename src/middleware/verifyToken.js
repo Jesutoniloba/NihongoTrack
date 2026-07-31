@@ -7,5 +7,6 @@ export function verifyToken(req, res, next) {
 
   const decoded = jwt.verify(token, env.ACCESS_TOKEN_SECRET);
   req.user = decoded;
+  console.log(decoded);
   next();
 }
