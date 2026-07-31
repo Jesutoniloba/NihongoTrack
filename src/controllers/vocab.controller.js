@@ -16,7 +16,7 @@ const handleResponse = (res, status, message, data = null) => {
 
 const getAllVocabs = async (req, res, next) => {
   try {
-    const vocabs = await getAllVocabsService(req.user.id);
+    const vocabs = await getAllVocabsService();
     handleResponse(res, 200, "Vocabs fetched sucessfully", vocabs);
   } catch (err) {
     next(err);
