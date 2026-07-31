@@ -5,8 +5,6 @@ import router from "./routes/routes.js";
 import authRoutes from "./routes/auth.routes.js";
 import { env } from "./config/env.js";
 import errorHandling from "./middleware/errorHandler.js";
-import createVocabsTable from "./data/create-vocabs-table.js";
-import createUsersTable from "./data/create-users-table.js";
 
 const app = express();
 const port = env.PORT;
@@ -21,9 +19,14 @@ app.get("/", (req, res) => {
 
 app.use(errorHandling);
 
-//Run Server
+export default app;
 
 async function startServer() {
+  const [{ default: createUsersTable }, { default: createVocabsTable }] =
+    await Promise.all([
+      import("./data/create-users-table.js"),
+      import("./data/create-vocabs-table.js"),
+    ]);
   await createUsersTable();
   await createVocabsTable();
   app.listen(port, () => {
@@ -31,4 +34,6 @@ async function startServer() {
   });
 }
 
-startServer();
+if (process.argv[1] && import.meta.url === new URL(`file://${process.argv[1]}`).href) {
+  startServer();
+}

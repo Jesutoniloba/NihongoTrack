@@ -58,4 +58,4 @@ const deleteUsers = async (req, res, next) => {
     next(err);
   }
 };
-export { getAllUsers, getUser, updateUsers, createUsers, deleteUsers };
+export { getAllUsers, getUser, updateUsers, deleteUsers };
