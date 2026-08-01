@@ -13,9 +13,6 @@ app.use(express.json());
 
 app.use("/api/vocabs", router);
 app.use("/api/auth", authRoutes);
-app.get("/", (req, res) => {
-  res.status(200).send("whyyyyyy");
-});
 
 app.use(errorHandling);
 
@@ -34,6 +31,9 @@ async function startServer() {
   });
 }
 
-if (process.argv[1] && import.meta.url === new URL(`file://${process.argv[1]}`).href) {
+if (
+  process.argv[1] &&
+  import.meta.url === new URL(`file://${process.argv[1]}`).href
+) {
   startServer();
 }

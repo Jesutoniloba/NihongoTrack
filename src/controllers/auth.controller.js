@@ -45,11 +45,16 @@ export async function refresh(req, res) {
 }
 
 export async function login(req, res) {
-  const result = await pool.query(
+  const result = loginSchema.safeParse(req.body);
+  if (!result.success) {
+    return res.status(400).json({ error: result.error.issues });
+  }
+  const { email, password } = result.data;
+  const credential = await pool.query(
     `SELECT email,id FROM users WHERE email = $1`,
-    [req.body.email],
+    [email],
   );
-  const user = result.rows[0];
+  const user = credential.rows[0];
   if (!user) return res.status(404).send(" User not found");
   try {
     const hash = await pool.query(
@@ -57,7 +62,7 @@ export async function login(req, res) {
       [req.body.email],
     );
     const storedHash = hash.rows[0].password_hash;
-    if (await argon2.verify(storedHash, req.body.password)) {
+    if (await argon2.verify(storedHash, password)) {
       const accessToken = generateAccessToken(user);
 
       const refreshToken = jwt.sign(user, env.REFRESH_TOKEN_SECRET, {
