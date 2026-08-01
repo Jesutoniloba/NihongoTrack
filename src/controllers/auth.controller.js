@@ -9,7 +9,7 @@ import {
   logoutSchema,
 } from "../validators/auth.validator.js";
 
-export async function register(req, res) {
+export async function register(req, res, next) {
   const result = registerSchema.safeParse(req.body);
   if (!result.success) {
     return res.status(400).json({ error: result.error.issues });
@@ -23,12 +23,12 @@ export async function register(req, res) {
       message: "User created Sucessfully",
       newUser: newUser.username,
     });
-  } catch (error) {
-    return res.status(500).json({ message: "Internal Server error" });
+  } catch (err) {
+    next(err);
   }
 }
 
-export async function refresh(req, res) {
+export async function refresh(req, res, next) {
   const result = await pool.query(`SELECT email FROM users WHERE email = $1`, [
     req.body.email,
   ]);
@@ -40,11 +40,11 @@ export async function refresh(req, res) {
     const accessToken = generateAccessToken(user);
     return res.json({ accessToken: accessToken });
   } catch (err) {
-    res.json(err);
+    next(err);
   }
 }
 
-export async function login(req, res) {
+export async function login(req, res, next) {
   const result = loginSchema.safeParse(req.body);
   if (!result.success) {
     return res.status(400).json({ error: result.error.issues });
@@ -80,7 +80,9 @@ export async function login(req, res) {
     } else {
       res.status(403).send("Authentication Failed");
     }
-  } catch (err) {}
+  } catch (err) {
+    next(err);
+  }
 }
 
 function generateAccessToken(user) {
@@ -89,9 +91,19 @@ function generateAccessToken(user) {
   });
 }
 
-export async function logout(req, res) {
-  await pool.query(`UPDATE  users SET refresh_token = NULL WHERE email = $1`, [
-    req.body.email,
-  ]);
-  res.json({ message: "Logout" });
+export async function logout(req, res, next) {
+  const result = logoutSchema.safeParse(req.body);
+  if (!result.success) {
+    return res.status(400).json({ error: result.error.issues });
+  }
+  const { email, password } = result.data;
+  try {
+    await pool.query(
+      `UPDATE  users SET refresh_token = NULL WHERE email = $1`,
+      [email],
+    );
+    res.json({ message: "Logout" });
+  } catch (err) {
+    next(err);
+  }
 }

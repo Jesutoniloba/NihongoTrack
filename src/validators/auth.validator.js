@@ -30,10 +30,4 @@ export const loginSchema = z.object({
 
 export const logoutSchema = z.object({
   email: z.email({ message: "Please enter a valid email address" }),
-  password: z
-    .string()
-    .min(8, { message: "Must be 8 or more characters long" })
-    .refine((value) => !value.includes(" "), {
-      message: "Password cannot include spaces",
-    }),
 });
