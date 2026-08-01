@@ -3,22 +3,29 @@ import argon2 from "argon2";
 import pool from "../config/db.js";
 import { env } from "../config/env.js";
 import { createUserService } from "../models/user-model.js";
+import {
+  registerSchema,
+  loginSchema,
+  logoutSchema,
+} from "../validators/auth.validator.js";
 
 export async function register(req, res) {
-  const { username, email, password } = req.body;
+  const result = registerSchema.safeParse(req.body);
+  if (!result.success) {
+    return res.status(400).json({ error: result.error.issues });
+  }
+  const { username, email, password } = result.data;
   try {
-    if (password && username && email) {
-      const password_hash = await argon2.hash(password);
+    const password_hash = await argon2.hash(password);
 
-      const newUser = createUserService(username, email, password_hash);
-      return res.status(201).json({
-        message: "User created Sucessfully",
-        newUser: newUser.username,
-      });
-    } else {
-      res.status(400).send("Bad");
-    }
-  } catch (error) {}
+    const newUser = await createUserService(username, email, password_hash);
+    return res.status(201).json({
+      message: "User created Sucessfully",
+      newUser: newUser.username,
+    });
+  } catch (error) {
+    return res.status(500).json({ message: "Internal Server error" });
+  }
 }
 
 export async function refresh(req, res) {
@@ -28,10 +35,15 @@ export async function refresh(req, res) {
   const user = result.rows[0];
   const refreshToken = req.body.token;
   if (!refreshToken) return res.json({ message: "No request token" });
-  jwt.verify(refreshToken, env.REFRESH_TOKEN_SECRET);
-  const accessToken = generateAccessToken(user);
-  res.json({ accessToken: accessToken });
+  try {
+    jwt.verify(refreshToken, env.REFRESH_TOKEN_SECRET);
+    const accessToken = generateAccessToken(user);
+    return res.json({ accessToken: accessToken });
+  } catch (err) {
+    res.json(err);
+  }
 }
+
 export async function login(req, res) {
   const result = await pool.query(
     `SELECT email,id FROM users WHERE email = $1`,
