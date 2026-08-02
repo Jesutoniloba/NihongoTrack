@@ -96,7 +96,7 @@ export async function logout(req, res, next) {
   if (!result.success) {
     return res.status(400).json({ error: result.error.issues });
   }
-  const { email, password } = result.data;
+  const { email } = result.data;
   try {
     await pool.query(
       `UPDATE  users SET refresh_token = NULL WHERE email = $1`,

@@ -5,6 +5,7 @@ import {
   deleteVocabsService,
   updateVocabsService,
 } from "../models/vocab-model.js";
+import { createVocabSchema } from "../validators/vocabs.validator.js";
 
 const handleResponse = (res, status, message, data = null) => {
   res.status(status).json({
@@ -45,6 +46,9 @@ const updateVocabs = async (req, res, next) => {
 };
 
 const createVocabs = async (req, res, next) => {
+  const result = createVocabSchema.safeParse(req.body);
+  if (!result.success)
+    return res.status(400).json({ error: result.error.issues });
   try {
     const word = req.body.word;
     const meaning = req.body.meaning;
