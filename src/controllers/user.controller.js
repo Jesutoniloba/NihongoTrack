@@ -49,6 +49,7 @@ const updateUsers = async (req, res, next) => {
   }
 };
 
+//
 const deleteUsers = async (req, res, next) => {
   try {
     const user = await deleteUsersService(req.params.id);
