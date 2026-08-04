@@ -4,7 +4,7 @@
 
 - [x] Make `refresh()` verify the refresh token against the stored database value.
 - [x] Rework `logout()` so it clears the correct user session safely.
-- [ ] Avoid trusting only `email` in refresh flows.
+- [x] Avoid trusting only `email` in refresh flows.
 
 ## Vocab Authorization
 

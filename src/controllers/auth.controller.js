@@ -29,20 +29,20 @@ export async function register(req, res, next) {
 }
 
 export async function refresh(req, res, next) {
-  const result = await pool.query(`SELECT email FROM users WHERE email = $1`, [
-    req.body.email,
-  ]);
-  const user = result.rows[0];
-
   try {
     const refreshToken = req.body.token;
     if (!refreshToken) return res.json({ message: "No request token" });
-    const result = await pool.query(
-      `SELECT refresh_token FROM users WHERE email = $1`,
-      [req.body.email],
-    );
-    const storedToken = result.rows[0]?.refresh_token;
     const token = jwt.verify(refreshToken, env.REFRESH_TOKEN_SECRET);
+    const email = token?.email;
+    if (!email) {
+      return res.status(401).json({ message: "invalid token" });
+    }
+    const result = await pool.query(
+      `SELECT email, refresh_token FROM users WHERE email = $1`,
+      [email],
+    );
+    const user = result.rows[0];
+    const storedToken = user?.refresh_token;
 
     if (!storedToken) {
       return res.status(401).json({ message: "refresh token not found" });
