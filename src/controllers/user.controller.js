@@ -1,5 +1,5 @@
 import {
-  getAllUserssService,
+  getAllUsersService,
   getUserService,
   createUsersService,
   deleteUsersService,
@@ -16,7 +16,7 @@ const handleResponse = (res, status, message, data = null) => {
 
 const getAllUsers = async (req, res, next) => {
   try {
-    const users = await getAllUserssService();
+    const users = await getAllUsersService();
     handleResponse(res, 200, "Users fetched successfully", users);
   } catch (err) {
     next(err);
@@ -49,7 +49,6 @@ const updateUsers = async (req, res, next) => {
   }
 };
 
-//
 const deleteUsers = async (req, res, next) => {
   try {
     const user = await deleteUsersService(req.params.id);

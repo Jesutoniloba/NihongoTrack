@@ -3,11 +3,7 @@ import argon2 from "argon2";
 import pool from "../config/db.js";
 import { env } from "../config/env.js";
 import { createUserService } from "../models/user-model.js";
-import {
-  registerSchema,
-  loginSchema,
-  logoutSchema,
-} from "../validators/auth.validator.js";
+import { registerSchema, loginSchema } from "../validators/auth.validator.js";
 
 export async function register(req, res, next) {
   const result = registerSchema.safeParse(req.body);

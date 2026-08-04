@@ -4,11 +4,8 @@ export const registerSchema = z.object({
   username: z
     .string()
     .trim()
-    .min(3, { message: "Must be 3 or more characters long" })
-    .max(20, { message: "Must not be  more than 20 characters long" })
-    .refine((value) => !value.includes("_"), {
-      message: "Username cannot include underscore",
-    }),
+    .min(3, { message: "Must be at least 3 characters long" })
+    .max(20, { message: "Must not be more than 20 characters long" }),
   email: z.email({ message: "Please enter a valid email address" }),
   password: z
     .string()

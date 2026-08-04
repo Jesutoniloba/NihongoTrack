@@ -52,14 +52,14 @@ const updateVocabs = async (req, res, next) => {
 
 const createVocabs = async (req, res, next) => {
   const result = createVocabSchema.safeParse(req.body);
-  if (!result.success)
+  if (!result.success) {
     return res.status(400).json({ error: result.error.issues });
+  }
+
   try {
-    const word = req.body.word;
-    const meaning = req.body.meaning;
-    const userId = req.user.id;
-    const newVocab = await createVocabsService(word, meaning, userId);
-    handleResponse(res, 200, "Vocab created successfully", newVocab);
+    const { word, meaning } = result.data;
+    const newVocab = await createVocabsService(word, meaning, req.user.id);
+    handleResponse(res, 201, "Vocab created successfully", newVocab);
   } catch (err) {
     next(err);
   }

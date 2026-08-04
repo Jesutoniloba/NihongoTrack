@@ -11,12 +11,7 @@ const createUsersTable = async () => {
     created_at TIMESTAMPTZ DEFAULT NOW(),
     updated_at TIMESTAMPTZ DEFAULT NOW()
 ) `;
-
-  try {
-    await pool.query(queryText);
-    console.log("Users table created");
-  } catch (error) {
-    console.log("Error creating user table", error);
-  }
+  await pool.query(queryText);
+  console.log("Users table created");
 };
 export default createUsersTable;

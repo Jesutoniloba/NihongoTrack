@@ -12,12 +12,8 @@ const createVocabsTable = async () => {
     FOREIGN KEY (user_id) REFERENCES users(id)
 )
 `;
-  try {
-    await pool.query(queryText);
-    console.log("Vocab table created");
-  } catch (error) {
-    console.log("Error creating vocab table", error);
-  }
+  await pool.query(queryText);
+  console.log("Vocab table created");
 };
 
 export default createVocabsTable;

@@ -7,6 +7,7 @@ import {
   deleteVocabs,
   getVocab,
 } from "../controllers/vocab.controller.js";
+
 const router = express.Router();
 
 router.get("/", verifyToken, getAllVocabs);

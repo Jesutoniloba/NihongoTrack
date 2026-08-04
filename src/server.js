@@ -1,6 +1,4 @@
 import express from "express";
-import dotenv from "dotenv";
-dotenv.config();
 import router from "./routes/routes.js";
 import authRoutes from "./routes/auth.routes.js";
 import { env } from "./config/env.js";
