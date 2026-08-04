@@ -12,7 +12,6 @@
 
 - [ ] Fix `getAllVocabsService()` so it accepts `userId` as an argument.
 - [ ] Remove the undefined `userId` reference inside `src/models/vocab-model.js`.
-- [ ] Fix `deleteUsersService()` to delete from `users`, not `user`.
 - [ ] Review whether `updated_at` should be updated automatically on writes.
 - [ ] Handle missing records more explicitly in `login()` and `refresh()`.
 - [ ] Consider adding validation for `refresh()` and `logout()` inputs.
@@ -41,12 +40,9 @@
 ## Spelling
 
 - [ ] Fix the typo `messsage` to `message` in `createVocabSchema`.
-- [ ] Correct the username length message in `registerSchema`.
-- [ ] Standardize spelling in messages like `Sucessfully`.
 
 ## Cleanup
 
-- [ ] Fix the server log format in `src/server.js` to use `http://localhost:${port}`.
 - [ ] Review naming consistency across services, controllers, and validators.
 - [ ] Remove stray `console.log(userId)` from vocab model code.
 - [ ] Remove dead or outdated code paths after fixes are applied.

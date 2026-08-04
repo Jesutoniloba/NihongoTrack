@@ -8,11 +8,11 @@ export const createVocabsService = async (word, meaning, userId) => {
   return result.rows[0];
 };
 
-export const getAllVocabsService = async () => {
+export const getAllVocabsService = async (userId) => {
   const result = await pool.query("SELECT * FROM vocabs WHERE user_id = $1", [
     userId,
   ]);
-  console.log(userId);
+
   return result.rows;
 };
 

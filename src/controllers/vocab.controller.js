@@ -39,7 +39,7 @@ const updateVocabs = async (req, res, next) => {
     const { word, meaning } = req.body;
     const vocab = await updateVocabsService(word, meaning, req.params.id);
     if (!vocab) return handleResponse(res, 404, "Vocab not Found");
-    handleResponse(res, 201, "Vocab updated successfully", vocab);
+    handleResponse(res, 200, "Vocab updated successfully", vocab);
   } catch (err) {
     next(err);
   }
@@ -64,7 +64,7 @@ const deleteVocabs = async (req, res, next) => {
   try {
     const vocab = await deleteVocabsService(req.params.id);
     if (!vocab) return handleResponse(res, 404, "Vocab not Found");
-    handleResponse(res, 201, "Vocab deleted successfully");
+    handleResponse(res, 200, "Vocab deleted successfully");
   } catch (err) {
     next(err);
   }
