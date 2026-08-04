@@ -33,14 +33,28 @@ export async function refresh(req, res, next) {
     req.body.email,
   ]);
   const user = result.rows[0];
-  const refreshToken = req.body.token;
-  if (!refreshToken) return res.json({ message: "No request token" });
+
   try {
-    jwt.verify(refreshToken, env.REFRESH_TOKEN_SECRET);
+    const refreshToken = req.body.token;
+    if (!refreshToken) return res.json({ message: "No request token" });
+    const result = await pool.query(
+      `SELECT refresh_token FROM users WHERE email = $1`,
+      [req.body.email],
+    );
+    const storedToken = result.rows[0]?.refresh_token;
+    const token = jwt.verify(refreshToken, env.REFRESH_TOKEN_SECRET);
+
+    if (!storedToken) {
+      return res.status(401).json({ message: "refresh token not found" });
+    }
+    if (refreshToken !== storedToken) {
+      return res.status(401).json({ message: "Invalid token" });
+    }
+
     const accessToken = generateAccessToken(user);
     return res.json({ accessToken: accessToken });
   } catch (err) {
-    next(err);
+    return res.status(401).json({ message: "invalid token" });
   }
 }
 
@@ -92,12 +106,12 @@ function generateAccessToken(user) {
 }
 
 export async function logout(req, res, next) {
-  const result = logoutSchema.safeParse(req.body);
-  if (!result.success) {
-    return res.status(400).json({ error: result.error.issues });
-  }
-  const { email } = result.data;
   try {
+    const email = req.user?.email;
+    if (!email) {
+      return res.status(401).json({ message: "unauthorized" });
+    }
+
     await pool.query(
       `UPDATE  users SET refresh_token = NULL WHERE email = $1`,
       [email],
