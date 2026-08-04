@@ -30,12 +30,18 @@ test("POST /api/auth/register validates required fields", async () => {
 });
 
 test("register creates a user and returns 201", async () => {
-  const hashMock = test.mock.method(argon2, "hash", async () => "hashed-password");
+  const hashMock = test.mock.method(
+    argon2,
+    "hash",
+    async () => "hashed-password",
+  );
   const createUserMock = test.mock.method(pool, "query", async () => ({
     rows: [{ username: "mika" }],
   }));
 
-  const req = { body: { username: "mika", email: "mika@example.com", password: "secret" } };
+  const req = {
+    body: { username: "mika", email: "mika@example.com", password: "secret" },
+  };
   const res = {
     statusCode: 200,
     payload: null,
@@ -52,7 +58,7 @@ test("register creates a user and returns 201", async () => {
   await authController.register(req, res);
 
   assert.equal(res.statusCode, 201);
-  assert.equal(res.payload.message, "User created Sucessfully");
+  assert.equal(res.payload.message, "User created successfully");
   assert.equal(createUserMock.mock.calls.length, 1);
   assert.equal(hashMock.mock.calls.length, 1);
 });

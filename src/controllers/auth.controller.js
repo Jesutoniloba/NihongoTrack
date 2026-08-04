@@ -20,7 +20,7 @@ export async function register(req, res, next) {
 
     const newUser = await createUserService(username, email, password_hash);
     return res.status(201).json({
-      message: "User created Sucessfully",
+      message: "User created successfully",
       newUser: newUser.username,
     });
   } catch (err) {

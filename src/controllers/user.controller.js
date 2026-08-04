@@ -17,7 +17,7 @@ const handleResponse = (res, status, message, data = null) => {
 const getAllUsers = async (req, res, next) => {
   try {
     const users = await getAllUserssService();
-    handleResponse(res, 200, "Users fetched sucessfully", users);
+    handleResponse(res, 200, "Users fetched successfully", users);
   } catch (err) {
     next(err);
   }
@@ -27,7 +27,7 @@ const getUser = async (req, res, next) => {
   try {
     const user = await getUserService(req.params.id);
     if (!user) return handleResponse(res, 404, "User not Found");
-    handleResponse(res, 200, "User fetched sucessfully", user);
+    handleResponse(res, 200, "User fetched successfully", user);
   } catch (err) {
     next(err);
   }
@@ -43,7 +43,7 @@ const updateUsers = async (req, res, next) => {
       req.params.id,
     );
     if (!user) return handleResponse(res, 404, "User not Found");
-    handleResponse(res, 201, "User updated sucessfully", user);
+    handleResponse(res, 201, "User updated successfully", user);
   } catch (err) {
     next(err);
   }
@@ -54,7 +54,7 @@ const deleteUsers = async (req, res, next) => {
   try {
     const user = await deleteUsersService(req.params.id);
     if (!user) return handleResponse(res, 404, "User not Found");
-    handleResponse(res, 201, "User deleted sucessfully");
+    handleResponse(res, 201, "User deleted successfully");
   } catch (err) {
     next(err);
   }
