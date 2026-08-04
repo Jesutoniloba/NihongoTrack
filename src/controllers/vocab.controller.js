@@ -26,7 +26,7 @@ const getAllVocabs = async (req, res, next) => {
 
 const getVocab = async (req, res, next) => {
   try {
-    const vocab = await getVocabService(req.params.id);
+    const vocab = await getVocabService(req.params.id, req.user.id);
     if (!vocab) return handleResponse(res, 404, "Vocab not Found");
     handleResponse(res, 200, "Vocab fetched successfully", vocab);
   } catch (err) {
@@ -37,7 +37,12 @@ const getVocab = async (req, res, next) => {
 const updateVocabs = async (req, res, next) => {
   try {
     const { word, meaning } = req.body;
-    const vocab = await updateVocabsService(word, meaning, req.params.id);
+    const vocab = await updateVocabsService(
+      word,
+      meaning,
+      req.params.id,
+      req.user.id,
+    );
     if (!vocab) return handleResponse(res, 404, "Vocab not Found");
     handleResponse(res, 200, "Vocab updated successfully", vocab);
   } catch (err) {
@@ -62,7 +67,7 @@ const createVocabs = async (req, res, next) => {
 
 const deleteVocabs = async (req, res, next) => {
   try {
-    const vocab = await deleteVocabsService(req.params.id);
+    const vocab = await deleteVocabsService(req.params.id, req.user.id);
     if (!vocab) return handleResponse(res, 404, "Vocab not Found");
     handleResponse(res, 200, "Vocab deleted successfully");
   } catch (err) {

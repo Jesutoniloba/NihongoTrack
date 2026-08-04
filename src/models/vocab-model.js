@@ -16,23 +16,42 @@ export const getAllVocabsService = async (userId) => {
   return result.rows;
 };
 
-export const getVocabService = async (id) => {
-  const result = await pool.query("SELECT * FROM vocabs WHERE id = $1", [id]);
-  return result.rows[0];
-};
-
-export const updateVocabsService = async (word, meaning, id) => {
+export const getVocabService = async (id, userId) => {
   const result = await pool.query(
-    "UPDATE vocabs SET word = $1, meaning = $2 WHERE id = $3 RETURNING *",
-    [word, meaning, id],
+    "SELECT * FROM vocabs WHERE id = $1 AND user_id = $2",
+    [id, userId],
   );
   return result.rows[0];
 };
 
-export const deleteVocabsService = async (id) => {
+export const updateVocabsService = async (word, meaning, id, userId) => {
+  // Old logic kept for review:
+  // const result = await pool.query(
+  //   "UPDATE vocabs SET word = $1, meaning = $2 WHERE id = $3 RETURNING *",
+  //   [word, meaning, id],
+  // );
+
+  // New logic:
+  // Only update a vocab if it belongs to the current user.
   const result = await pool.query(
-    "DELETE FROM vocabs WHERE id = $1 RETURNING *",
-    [id],
+    "UPDATE vocabs SET word = $1, meaning = $2 WHERE id = $3 AND user_id = $4 RETURNING *",
+    [word, meaning, id, userId],
+  );
+  return result.rows[0];
+};
+
+export const deleteVocabsService = async (id, userId) => {
+  // Old logic kept for review:
+  // const result = await pool.query(
+  //   "DELETE FROM vocabs WHERE id = $1 RETURNING *",
+  //   [id],
+  // );
+
+  // New logic:
+  // Only delete a vocab if it belongs to the current user.
+  const result = await pool.query(
+    "DELETE FROM vocabs WHERE id = $1 AND user_id = $2 RETURNING *",
+    [id, userId],
   );
   return result.rows[0];
 };
